@@ -6,29 +6,32 @@ app.secret_key = "ro-secret-key"
 USERNAME = "admin"
 PASSWORD = "admin123"
 
-# 🔹 Health check (USED BY ALB)
+# ✅ ALB health check (MUST return 200)
 @app.route("/")
 def health():
     return "RO Sales App is running", 200
 
 
-# 🔹 Login page
+# ✅ Login page
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+    try:
+        if request.method == "POST":
+            username = request.form.get("username")
+            password = request.form.get("password")
 
-        if username == USERNAME and password == PASSWORD:
-            session["user"] = username
-            return redirect(url_for("dashboard"))
-        else:
-            return render_template("login.html", error="Invalid credentials")
+            if username == USERNAME and password == PASSWORD:
+                session["user"] = username
+                return redirect(url_for("dashboard"))
+            else:
+                return render_template("login.html", error="Invalid credentials")
 
-    return render_template("login.html")
+        return render_template("login.html")
+    except Exception as e:
+        return f"Login Error: {str(e)}", 500
 
 
-# 🔹 Dashboard (protected)
+# ✅ Dashboard
 @app.route("/dashboard")
 def dashboard():
     if "user" not in session:
@@ -36,7 +39,7 @@ def dashboard():
     return render_template("index.html")
 
 
-# 🔹 Logout
+# ✅ Logout
 @app.route("/logout")
 def logout():
     session.pop("user", None)
