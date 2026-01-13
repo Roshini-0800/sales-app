@@ -6,10 +6,11 @@ app.secret_key = "ro-secret-key"
 USERNAME = "admin"
 PASSWORD = "admin123"
 
-# 🔹 Root route → redirect to login
+# 🔹 Health check (USED BY ALB)
 @app.route("/")
-def root():
-    return redirect(url_for("login"))
+def health():
+    return "RO Sales App is running", 200
+
 
 # 🔹 Login page
 @app.route("/login", methods=["GET", "POST"])
@@ -26,18 +27,21 @@ def login():
 
     return render_template("login.html")
 
-# 🔹 Dashboard
+
+# 🔹 Dashboard (protected)
 @app.route("/dashboard")
 def dashboard():
     if "user" not in session:
         return redirect(url_for("login"))
     return render_template("index.html")
 
+
 # 🔹 Logout
 @app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
