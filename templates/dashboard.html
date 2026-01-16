@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f4f8;
+            padding: 40px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #0071e3;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>📊 Sales Dashboard</h2>
+
+<div class="card">
+    <h3>Total Sales: {{ total_sales }}</h3>
+    <h3>Total Revenue: ₹ {{ total_amount }}</h3>
+</div>
+
+<div class="card">
+    <h3>Sales Details</h3>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Amount</th>
+        </tr>
+        {% for sale in sales %}
+        <tr>
+            <td>{{ sale.product }}</td>
+            <td>₹ {{ sale.amount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>

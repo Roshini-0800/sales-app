@@ -1,11 +1,42 @@
+############################
 # Python
+############################
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
+############################
 # Docker
+############################
 .dockerignore
 
-# OS files
+############################
+# OS Files
+############################
 .DS_Store
 Thumbs.db
+
+############################
+# Terraform (CRITICAL)
+############################
+# Terraform working directory
+**/.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform lock file (do NOT commit for CI/CD consistency)
+.terraform.lock.hcl
+
+# Terraform provider binaries (Windows/Linux)
+*.exe
+*.zip
+
+############################
+# Logs & temp
+############################
+*.log
+*.tmp
