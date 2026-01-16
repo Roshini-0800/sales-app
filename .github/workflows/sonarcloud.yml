@@ -1,4 +1,4 @@
-name: SonarCloud Scan
+name: SonarCloud SAST Scan
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   sonarcloud:
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -23,5 +24,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          organization: roshini-0800
-          projectKey: roshini-0800_sales-app
+          args: >
+            -Dsonar.organization=roshini-0800
+            -Dsonar.projectKey=Roshini-0800_sales-app
+            -Dsonar.sources=.
+            -Dsonar.python.version=3
+            -Dsonar.exclusions=**/.terraform/**,**/*.tfstate,**/*.tfstate.backup,**/venv/**,**/__pycache__/**,**/*.exe
