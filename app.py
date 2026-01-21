@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+import os
 
 app = Flask(__name__)
-app.secret_key = "ro-secret-key"
 
-# Hardcoded login credentials
-USERNAME = "admin"
-PASSWORD = "admin123"
+# ✅ Secure secret key (from environment variable)
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "default-dev-key")
+
+# ✅ Secure credentials from environment variables
+USERNAME = os.getenv("APP_USERNAME")
+PASSWORD = os.getenv("APP_PASSWORD")
 
 # In-memory sales store
 sales_data = []
@@ -22,6 +25,7 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        # Validate credentials securely
         if username == USERNAME and password == PASSWORD:
             session["user"] = username
             return redirect(url_for("index"))
