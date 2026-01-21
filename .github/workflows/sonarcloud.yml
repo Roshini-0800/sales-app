@@ -1,4 +1,4 @@
-name: SonarCloud SAST Scan
+name: SonarCloud Scan
 
 on:
   push:
@@ -10,7 +10,6 @@ on:
 
 jobs:
   sonarcloud:
-    name: SonarCloud Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -29,4 +28,7 @@ jobs:
             -Dsonar.projectKey=Roshini-0800_sales-app
             -Dsonar.sources=.
             -Dsonar.python.version=3
+            -Dsonar.terraform.provider.aws.version=5.100.0
             -Dsonar.exclusions=**/.terraform/**,**/*.tfstate,**/*.tfstate.backup,**/venv/**,**/__pycache__/**,**/*.exe
+            -Dsonar.coverage.exclusions=**/*
+            -Dsonar.qualitygate.wait=true
