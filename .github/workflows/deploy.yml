@@ -9,36 +9,54 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      ECR_REPOSITORY: sales-app
+      ECS_CLUSTER: sales-cluster
+      ECS_SERVICE: sales-service
+      FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # 🔹 Checkout Code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+      # 🔹 Configure AWS Credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+      # 🔹 Login to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Build Docker image
-      run: |
-        docker build -t sales-app .
+      # 🔹 Build Docker Image
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg FLASK_SECRET_KEY=${FLASK_SECRET_KEY} \
+            -t ${ECR_REPOSITORY}:latest .
 
-    - name: Tag Docker image
-      run: |
-        docker tag sales-app:latest ${{ steps.login-ecr.outputs.registry }}/sales-app:latest
+      # 🔹 Tag Docker Image
+      - name: Tag Docker image
+        run: |
+          docker tag ${ECR_REPOSITORY}:latest \
+            ${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:latest
 
-    - name: Push Docker image to ECR
-      run: |
-        docker push ${{ steps.login-ecr.outputs.registry }}/sales-app:latest
+      # 🔹 Push Image to ECR
+      - name: Push Docker image to ECR
+        run: |
+          docker push \
+            ${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:latest
 
-    - name: Deploy to ECS
-      run: |
-        aws ecs update-service \
-          --cluster sales-cluster \
-          --service sales-service \
-          --force-new-deployment
+      # 🔹 Deploy to ECS
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster ${ECS_CLUSTER} \
+            --service ${ECS_SERVICE} \
+            --force-new-deployment
