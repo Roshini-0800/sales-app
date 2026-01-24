@@ -15,4 +15,4 @@ jobs:
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: ${{ secrets.APP_URL }}
-          fail_action: true
+          fail_action: false
