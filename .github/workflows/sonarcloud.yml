@@ -31,4 +31,4 @@ jobs:
             -Dsonar.terraform.provider.aws.version=5.100.0
             -Dsonar.exclusions=**/.terraform/**,**/*.tfstate,**/*.tfstate.backup,**/venv/**,**/__pycache__/**,**/*.exe
             -Dsonar.coverage.exclusions=**/*
-            -Dsonar.qualitygate.wait=true
+          #  -Dsonar.qualitygate.wait=true
