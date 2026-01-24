@@ -1,19 +1,28 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask_wtf import CSRFProtect
 import os
 
 app = Flask(__name__)
 
-# ✅ Secure secret key (from environment variable)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "default-dev-key")
+# 🔐 Secure secret key from environment variable
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
+if not app.secret_key:
+    raise RuntimeError("FLASK_SECRET_KEY is not set")
 
-# ✅ Secure credentials from environment variables
+# 🔐 Enable CSRF protection
+csrf = CSRFProtect(app)
+
+# 🔐 Secure credentials from environment variables
 USERNAME = os.getenv("APP_USERNAME")
 PASSWORD = os.getenv("APP_PASSWORD")
+
+if not USERNAME or not PASSWORD:
+    raise RuntimeError("APP_USERNAME or APP_PASSWORD is not set")
 
 # In-memory sales store
 sales_data = []
 
-# 🔹 ALB Health Check (VERY IMPORTANT)
+# 🔹 ALB Health Check
 @app.route("/")
 def health():
     return "RO Sales App is running", 200
@@ -25,7 +34,6 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # Validate credentials securely
         if username == USERNAME and password == PASSWORD:
             session["user"] = username
             return redirect(url_for("index"))
@@ -41,7 +49,7 @@ def index():
         return redirect(url_for("login"))
     return render_template("index.html")
 
-# 🔹 Purchase Route
+# 🔹 Purchase Route (CSRF Protected Automatically)
 @app.route("/purchase", methods=["POST"])
 def purchase():
     if "user" not in session:
@@ -78,9 +86,9 @@ def dashboard():
     )
 
 # 🔹 Logout
-@app.route("/logout")
+@app.route("/logout", methods=["POST"])
 def logout():
-    session.pop("user", None)
+    session.clear()
     return redirect(url_for("login"))
 
 if __name__ == "__main__":
