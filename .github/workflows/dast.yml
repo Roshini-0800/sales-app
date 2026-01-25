@@ -5,7 +5,6 @@ on:
   pull_request:
     branches:
       - main
-
   push:
     branches:
       - main
@@ -21,3 +20,4 @@ jobs:
           target: ${{ secrets.APP_URL }}
           fail_action: false
           cmd_options: "-I"
+          artifact_name: ""
