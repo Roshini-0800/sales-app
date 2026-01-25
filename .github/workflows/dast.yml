@@ -12,11 +12,6 @@ on:
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: write
-      id-token: write
-      security-events: write
 
     steps:
       - name: Checkout code
@@ -27,15 +22,13 @@ jobs:
         with:
           target: ${{ secrets.APP_URL }}
           fail_action: false
-          # -I ensures warnings do not fail the pipeline
           cmd_options: "-I"
-          artifact_name: "zap-report"
 
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: |
-            zap-report.html
-            zap-report.md
-            zap-report.json
+            report_html.html
+            report_md.md
+            report_json.json
