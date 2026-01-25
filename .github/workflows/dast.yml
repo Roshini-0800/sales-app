@@ -28,23 +28,14 @@ jobs:
           target: ${{ secrets.APP_URL }}
           fail_action: false
           # -I ensures warnings do not fail the pipeline
-          cmd_options: "-I -r report_html.html -w report_md.md -J report_json.json"
+          cmd_options: "-I"
           artifact_name: "zap-report"
 
-      - name: Upload ZAP HTML Report
+      - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
         with:
-          name: zap-html-report
-          path: report_html.html
-
-      - name: Upload ZAP Markdown Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-md-report
-          path: report_md.md
-
-      - name: Upload ZAP JSON Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-json-report
-          path: report_json.json
+          name: zap-report
+          path: |
+            zap-report.html
+            zap-report.md
+            zap-report.json
