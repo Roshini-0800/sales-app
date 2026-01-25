@@ -6,13 +6,18 @@ on:
     branches:
       - main
 
+  push:
+    branches:
+      - main
+
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run OWASP ZAP Baseline Scan
+      - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: ${{ secrets.APP_URL }}
           fail_action: false
+          cmd_options: "-I"
