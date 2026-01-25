@@ -28,7 +28,7 @@ jobs:
           target: ${{ secrets.APP_URL }}
           fail_action: false
           # -I ensures warnings do not fail the pipeline
-          cmd_options: "-I -config failOnWarn=false -config failOnInfo=false"
+          cmd_options: "-I -r report_html.html -w report_md.md -J report_json.json"
           artifact_name: "zap-report"
 
       - name: Upload ZAP HTML Report
