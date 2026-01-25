@@ -22,7 +22,9 @@ jobs:
         with:
           target: ${{ secrets.APP_URL }}
           fail_action: false
-          cmd_options: "-I -config failOnWarn=false -config failOnInfo=false"
+          # Ignore info-level alerts (-I)
+          # Prevent pipeline failure on warnings or info
+          cmd_options: "-I --fail-on-warn=false --fail-on-info=false"
           artifact_name: "zap-report"
 
       - name: Upload ZAP HTML Report
