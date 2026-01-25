@@ -14,13 +14,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: ${{ secrets.APP_URL }}
           fail_action: false
-          # -I ignores informational alerts
-          # failOnWarn=false ensures warnings don’t break the pipeline
-          # failOnInfo=false ensures info alerts don’t break the pipeline
+          # Ignore informational alerts (-I)
+          # Don't fail on warnings or info-level alerts
           cmd_options: "-I -config failOnWarn=false -config failOnInfo=false"
           artifact_name: "zap-report"
+
+      - name: Upload ZAP HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-html-report
+          path: report_html.html
+
+      - name: Upload ZAP Markdown Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-md-report
+          path: report_md.md
+
+      - name: Upload ZAP JSON Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-json-report
+          path: report_json.json
