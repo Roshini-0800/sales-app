@@ -19,5 +19,8 @@ jobs:
         with:
           target: ${{ secrets.APP_URL }}
           fail_action: false
-          cmd_options: "-I"
-          artifact_name: ""
+          # -I ignores informational alerts
+          # failOnWarn=false ensures warnings don’t break the pipeline
+          # failOnInfo=false ensures info alerts don’t break the pipeline
+          cmd_options: "-I -config failOnWarn=false -config failOnInfo=false"
+          artifact_name: "zap-report"
