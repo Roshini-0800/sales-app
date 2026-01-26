@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from flask_wtf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect
 import os
 
 app = Flask(__name__)
@@ -21,6 +21,17 @@ if not USERNAME or not PASSWORD:
 
 # In-memory sales store
 sales_data = []
+
+# 🔐 Add security headers to every response
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    response.headers["Permissions-Policy"] = "geolocation=()"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 # 🔹 ALB Health Check
 @app.route("/")
